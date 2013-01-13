@@ -4,6 +4,17 @@
 @{
     ViewBag.Title = "Trello PIp2 - Archived Cards";
 }
+@functions
+{public static string LimitText(string text, int limit = 55)
+ {
+     if(text.Length > limit)
+     {
+         text = text.Substring(0, limit);
+         text += "...";
+     }
+     return text;
+ }
+}
 <h2>Your Archived Cards</h2>
 
 @if(Model.Any())
@@ -23,7 +34,7 @@
                             <br/>
                             <div style="text-align: center; margin-right: 10px;">@Html.ActionLink(card.Name, "Details", "Cards", new {id = card.Id}, null)</div>
                             <br/>
-                            <div style="text-align: center; margin-right: 10px;">@CommonViewFunctions.LimitText(card.Description)</div>
+                            <div style="text-align: center; margin-right: 10px;">@LimitText(card.Description)</div>
                         </div>
                     </td>
                 }

@@ -4,6 +4,17 @@
 @{
     ViewBag.Title = "Trello PIp2 - Boards";
 }
+@functions
+{public static string LimitText(string text, int limit = 55)
+ {
+     if(text.Length > limit)
+     {
+         text = text.Substring(0, limit);
+         text += "...";
+     }
+     return text;
+ }
+}
 <h2>Your Boards</h2>
 
 @if(Model.Any())
@@ -22,7 +33,7 @@
                             <br/>
                             <div style="text-align: center; margin-right: 10px;">@Html.ActionLink(board.Name, "Details", new {id = board.Id})</div>
                             <br/><br/>
-                            <div style="text-align: center; margin-right: 10px;">@CommonViewFunctions.LimitText(board.Description)</div>
+                            <div style="text-align: center; margin-right: 10px;">@LimitText(board.Description)</div>
                             <span style="position:absolute; bottom:0; right:10px;">
                                 @if(board.CanEdit(User.Identity.Name)){
                                     <a href="Boards/Edit/@board.Id"> <img src="../../Content/img/edit.jpg" width="15" height="15"/> </a>
