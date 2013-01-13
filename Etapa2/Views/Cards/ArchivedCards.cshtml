@@ -1,0 +1,49 @@
+﻿@using System.Linq
+@using Etapa2.Models
+@model IEnumerable<IEnumerable<Card>>
+@{
+    ViewBag.Title = "Trello PIp2 - Archived Cards";
+}
+<h2>Your Archived Cards</h2>
+
+@if(Model.Any())
+{
+    <table style="width: 100%">
+        @foreach(var cardDivision in Model)
+        {
+            <tr style="height: 150px;">
+
+                @foreach (Card card in cardDivision)
+                {
+                    <td class="filledboard" style="width: @(100/ViewBag.ArchivedCardsPerLine)%; position: relative;">
+                        <div style="position: absolute; top: 0; width: 100%; height: 100%;">
+                            <div style="position: relative; font-size: 70%;" align="center"> -> </div>
+                            <div style="position: absolute; top: 0; left: 0; font-size: 70%;">@card.CreateDate.ToShortDateString() </div>
+                            <div style="position: absolute; top: 0; right: 0; font-size: 70%; padding-right: 10px">@card.DateConclusion.ToShortDateString()</div>
+                            <br/>
+                            <div style="text-align: center; margin-right: 10px;">@Html.ActionLink(card.Name, "Details", "Cards", new {id = card.Id}, null)</div>
+                            <br/>
+                            <div style="text-align: center; margin-right: 10px;">@CommonViewFunctions.LimitText(card.Description)</div>
+                        </div>
+                    </td>
+                }
+                @if (cardDivision.Count() != ViewBag.ArchivedCardsPerLine)
+                {
+                    int n = ViewBag.ArchivedCardsPerLine - cardDivision.Count();
+                    for (int i = 0; i < n; i++)
+                    {
+                        <td class="empty" style="width: @(100/ViewBag.ArchivedCardsPerLine)%"> </td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+}
+@if(!Model.Any())
+{
+    <div style="border: solid 2px #e8eef4; height: 150px; text-align: center;">
+        <br/>
+        <h2 style=" color: cadetblue;">You don't have any archived cards!</h2>
+    </div>
+}
+

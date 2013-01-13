@@ -1,0 +1,18 @@
+﻿@using Etapa2.Models
+@model Card
+
+@{
+    ViewBag.Title = "CardDetail - " + Model.Name;
+}
+
+<h2>Board <span style="color: cadetblue">@Model.Name</span> Details</h2>
+<h3>Descripton: @Model.Description</h3>
+<h3>Initial Date: @Model.CreateDate.ToShortDateString()</h3>
+<h3>End Date: @Model.DateConclusion.ToShortDateString()</h3>
+<h3>Position in list: @Model.BoardListPosition </h3>
+@if (Model.IsArchived)
+{
+    <h3>Archived</h3>
+}
+
+<p>@Html.ActionLink("Back","Details","Lists", new { Id = Model.BoardListId}, null)</p>

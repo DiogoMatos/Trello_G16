@@ -1,0 +1,121 @@
+﻿@using Etapa2.Models
+@model Board
+@{bool PageEditable = Model.CanEdit(User.Identity.Name); }
+@{bool IsOwner = User.Identity.Name==Model.User; }
+
+@{
+    ViewBag.Title = "BoardEdit - " + Model.Name;
+}
+
+<h2>Board <span style="color: cadetblue;">@Model.Name</span> Details</h2>
+<h3>Owner: @if (IsOwner) { <text>You</text> }else{<text>@Model.User</text>}</h3>
+<h3>Creation Date: @Model.CreateDate.ToShortDateString()</h3>
+
+<fieldset>
+    <legend>Edit Board</legend>
+    <br />
+        <div>
+            <fieldset>
+                <legend>Permissions</legend>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <td style="width:250px; text-align:center;">User</td><td>Can Write</td><td>Remove</td>
+                            </tr>
+                        </thead>
+                        @if(Model.permissions.Count != 0){
+                        <tbody>
+                            @foreach (BoardPermission permission in Model.permissions.Values)
+                            {
+                                <tr>
+                                    <td>
+                                        @permission.User
+                                    </td>
+                                    <td style="text-align:center;">
+                                        @if (IsOwner)
+                                        { 
+                                            if(permission.CanWrite){
+                                                using (Html.BeginForm("PermissionChange", "Boards", new { boardid = Model.Id, userperm = permission.User, set = false }))
+                                                {
+                                                    <input type="image" src="../../Content/img/CheckboxTrue.png" />
+                                                }
+                                            }else{
+                                                using (Html.BeginForm("PermissionChange", "Boards", new { boardid = Model.Id, userperm = permission.User, set = true }))
+                                                {
+                                                    <input type="image" src="../../Content/img/CheckboxFalse.png" />
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @Html.CheckBox("canW", permission.CanWrite, new { disabled = "disabled" })
+                                        }
+                                    </td>
+                                    <td style="text-align:center;">
+                                        @using (Html.BeginForm("PermissionRemove", "Boards", new { boardid = Model.Id, name = permission.User }))
+                                        {
+                                            if (IsOwner)
+                                            { 
+                                                <input width="20" height="20" type="image" name="done_5" src="../../Content/img/remove.jpg" onclick="return ConfirmRemovePermission();"/>
+                                            }
+                                            else
+                                            {
+                                                <img width="20" height="20" src="../../Content/img/remove.bmp" />
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        }
+                        @if (Model.permissions.Count == 0)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" style="color: cadetblue; text-align:center;">Only you have permission to view and edit this board</td>
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                    @if (IsOwner)
+                    { 
+                        <div style="width:100%; padding-top:10px;">
+                            @using (Html.BeginForm("PermissionAdd", "Boards", new { boardid = Model.Id }))
+                            {
+                                <button type="submit">Add New User!</button>
+                                <label for="permissionname">Name: </label><input type="text" id="permissionname" name="permissionname" value=""/>
+                                <label for="permissionaddtype" style="padding-left:20px">Permission:</label> 
+                                <span id="permissionaddtype">
+                                    <label for="permissiontypewrite" style="padding-left:10px;">Can View and Edit:</label>
+                                    <input id="permissiontypewrite" type="radio" name="permissiontype" value="rw"/>
+                                    <label for="permissiontyperead" style="padding-left:10px;">Can only View:</label>
+                                    <input id ="permissiontyperead" type="radio" name="permissiontype" value="r"/>
+                                </span> 
+                        
+                                <div style="color: red;">@ViewBag.permissionerror</div>
+                            }
+                        </div>
+                    }
+                </fieldset>
+        </div>
+    <br />
+    @using (Html.BeginForm("Edit", "Boards"))
+    {
+        <br />
+        <div>Name: <span style="margin-left: 40px">@Html.TextBox("name", Model.Name)</span></div>
+        <div style="position: relative"> <span style="position: absolute; top: 0">Description:</span> <span style="margin-left: 82px">@Html.TextArea("desc", Model.Description, new { @class = "textArea" })</span></div>
+        <button type="submit">Edit!</button>
+    }
+    <span style="color: red; margin-left: 30px">@ViewBag.editerror</span>
+</fieldset>
+
+<script type="text/javascript"">
+    function ConfirmRemovePermission() {
+        debugger;
+        if (confirm('Are you sure you want to denie this user from using this board?')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

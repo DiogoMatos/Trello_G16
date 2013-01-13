@@ -1,0 +1,68 @@
+﻿@using System.Linq
+@using Etapa2.Models
+@model IEnumerable<IEnumerable<Board>>
+@{
+    ViewBag.Title = "Trello PIp2 - Boards";
+}
+<h2>Your Boards</h2>
+
+@if(Model.Any())
+{
+    <table style="width: 100%">
+        @foreach(var boardDivision in Model)
+        {
+            <tr style="height: 150px;">
+
+                @foreach (Board board in boardDivision)
+                {
+                    <td class="filledboard" style="width: @(100/ViewBag.BoardsPerLine)%; position: relative;">
+                        <div style="position: absolute; top: 0; width: 100%; height: 100%;">
+                            <div style="position: absolute; top: 0; right: 0; font-size: 70%; padding-right: 5px">@board.CreateDate.ToShortDateString()</div>
+                            <div style="position: absolute; top: 0; left: 0; font-size: 70%;">Board owner: @if(board.User == User.Identity.Name){<text>You</text>}else{<text>@board.User</text>}</div>
+                            <br/>
+                            <div style="text-align: center; margin-right: 10px;">@Html.ActionLink(board.Name, "Details", new {id = board.Id})</div>
+                            <br/><br/>
+                            <div style="text-align: center; margin-right: 10px;">@CommonViewFunctions.LimitText(board.Description)</div>
+                            <span style="position:absolute; bottom:0; right:10px;">
+                                @if(board.CanEdit(User.Identity.Name)){
+                                    <a href="Boards/Edit/@board.Id"> <img src="../../Content/img/edit.jpg" width="15" height="15"/> </a>
+                                }else{
+                                    <img src="../../Content/img/editNo.png" width="15" height="15"/>
+                                }
+                            </span>
+                        </div>
+                    </td>
+                }
+                @if(boardDivision.Count() != ViewBag.BoardsPerLine)
+                {
+                    int n = ViewBag.BoardsPerLine - boardDivision.Count();
+                    for (int i = 0; i < n; i++)
+                    {
+                        <td class="empty" style="width: @(100/ViewBag.BoardsPerLine)%"> </td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+}
+@if(!Model.Any())
+{
+<div style="border: solid 2px #e8eef4; height: 150px; text-align: center;">
+    <h2 style=" color: cadetblue;">You don't have any boards!</h2>
+    <h2 style=" color: cadetblue;">Create a new one to get started.</h2>
+</div>
+}
+<br/><hr/><br/>
+
+<h2>Create a new Board!</h2>
+
+@using (Html.BeginForm("Create", "Boards"))
+{
+    <fieldset>
+        <legend>New Board</legend>
+        <div>Name: <span style="margin-left: 40px">@Html.TextBox("name", "", new { id = "name" })</span></div>
+        <div style="position: relative"> <span style="position: absolute; top: 0">Description:</span> <span style="margin-left: 82px">@Html.TextArea("desc", new { @class = "textArea" })</span></div>
+        <button type="submit" onclick="javaScript: return VerifyElementNotNull('name', 'Name');">Create!</button>
+        <span id="inputError" style="color: red; margin-left: 30px"> @ViewBag.error </span>
+    </fieldset>
+}

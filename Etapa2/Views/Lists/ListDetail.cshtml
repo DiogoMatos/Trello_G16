@@ -1,0 +1,156 @@
+﻿@using Etapa2.Models
+@using Etapa2.Views.Entitys
+@model ListDetails
+
+@{
+    ViewBag.Title = "ListDetail - " + Model.list.Name;
+}
+
+<h2>List <span style="color: cadetblue">@Model.list.Name</span> Details</h2>
+<h3>Position in board: @Model.list.BoardPosition</h3>
+<h3>Creation Date: @Model.list.CreateDate.ToShortDateString()</h3>
+
+<br/><hr/><br/>
+
+@if(Model.cardsDivided.Any())
+{
+    <fieldset>
+        <legend>@Model.list.Name - Cards</legend>
+        <table style="width: 100%" id="listCards">
+            @foreach(var cardDivision in Model.cardsDivided)
+            {
+                <tr style="height: 150px;" id="sortable">
+
+                    @foreach (Card card in cardDivision.OrderBy(c => c.BoardListPosition))
+                    {<!--class="filledboard"-->
+                        <td id="@string.Format("c_pos_{0}",@card.Id)" class="ui-state-default" style="width: @(100/Model.cardsPerLine)%; position: relative;">
+                            <div style="position: absolute; top: 0; width: 100%; height: 100%;">
+                                <div style="position: relative; font-size: 70%;" align="center"> -> </div>
+                                <div style="position: absolute; top: 0; left: 0; font-size: 70%;">@card.CreateDate.ToShortDateString() </div>
+                                <div style="position: absolute; top: 0; right: 0; font-size: 70%; padding-right: 10px">@card.DateConclusion.ToShortDateString()</div>
+                                <br/>
+                                <div style="text-align: center; margin-right: 10px;">@Html.ActionLink(card.Name, "Details", "Cards", new {id = card.Id}, null)</div>
+                                <br/>
+                                <div style="text-align: center; margin-right: 10px;">@CommonViewFunctions.LimitText(card.Description)</div>
+                                <span style="position:absolute; bottom:0; right:10px;">
+                                    @if(Model.canUserWrite){
+                                        <a href="/Cards/Edit/@card.Id"><img src="../../Content/img/editcard.ico" width="15" height="15"/> </a>
+                                    }
+                                </span>
+                            </div>
+                        </td>
+                    }
+                    @if (cardDivision.Count() != Model.cardsPerLine)
+                    {
+                        int n = Model.cardsPerLine - cardDivision.Count();
+                        for (int i = 0; i < n; i++)
+                        {
+                            <td id="c_pos_0" class="empty" style="width: @(100/Model.cardsPerLine)%"> </td>
+                        }
+                    }
+                </tr>
+            }
+        </table>
+    </fieldset>
+    
+    <div style="display: none" id="cardOptions">
+        Press the button to commit the changes in card's order: <input type="button" value="Save Changes" onclick="TrelloFunctions.saveCardsOrder(@Model.list.Id)" />
+        <span id="changeMsgSuccess" style="display: none; color: green">Cards order changed successfully!</span>
+        <span id="changeMsgError"   style="display: none; color: red"  >Some error occurred in cards ordering!</span>
+        <p>
+            <div id="moveCardDiv">
+                <span>Move Card: <select id="cardDropDown">
+                                     @foreach (var card in Model.cardsDivided.SelectMany(list => list))
+                                     {
+                                         <option value="@card.Id">@card.Name</option>
+                                     }  
+                                 </select>
+                    To List:     <select id="listDropDown">
+                                 </select>
+                    &nbsp;       <input type="button" value="Move" onclick="TrelloFunctions.moveCard()" />
+                </span>
+            </div>
+        </p>
+    </div>
+    <input id="btnOption" type="button" value="Show Options" style="width: 100%" onclick="TrelloFunctions.showOptions(@Model.list.BoardId)" />
+}
+@if (!Model.cardsDivided.Any())
+{
+    if (Model.canUserWrite)
+    {
+        <div style="border: solid 2px #e8eef4; height: 150px; text-align: center;">
+            <h2 style=" color: cadetblue;">You don't have any cards in this list!</h2>
+            <h2 style=" color: cadetblue;">Create a new one bellow.</h2>
+        </div>
+    }
+    else
+    {
+        <div style="border: solid 2px #e8eef4; height: 150px; text-align: center;">
+            <br />
+            <h2 style=" color: cadetblue;">This list have no cards!</h2>
+        </div>
+    }
+}
+
+
+@if (Model.canUserWrite)
+{
+<br/><hr/><br/>
+
+<h2>Create a new Card!</h2>
+    using (Html.BeginForm("Create", "Cards"))
+    {
+        <input type="hidden" name="boardId" value="@Model.list.BoardId"/>
+        <input type="hidden" name="boardListId" value="@Model.list.Id"/>
+        <fieldset>
+            <legend>New Card</legend>
+            <div>Name: <span style="margin-left: 40px">@Html.TextBox("name", "", new { id = "inpName" })</span></div>
+            <div>End Date: <span style="margin-left: 17px">@Html.TextBox("end_date", "dd-mm-yyyy", new { id = "end_date", @class = "datepicker" })</span></div>
+            @if (Model.numberOfCards == 0)
+            {
+                <input type="hidden" name="position" value="1"/>
+            }
+            @if (Model.numberOfCards != 0)
+            {
+                List<SelectListItem> posList = new List<SelectListItem>();
+                int i = 1;
+                for (; i <= Model.numberOfCards; ++i)
+                {
+                    posList.Add(new SelectListItem { Selected = false, Text = i.ToString(), Value = i.ToString() });
+                }
+                posList.Add(new SelectListItem { Selected = true, Text = i.ToString(), Value = i.ToString() });
+            
+                <div style="position: relative"> <span style="position: absolute; top: 0">Position:</span> <span style="margin-left: 82px">@Html.DropDownList("position", posList)</span></div>
+            }
+
+            <div style="position: relative"> <span style="position: absolute; top: 0">Description:</span> <span style="margin-left: 82px">@Html.TextArea("description", new { @class = "textArea" })</span></div>
+            <button type="submit" onclick="javaScript: return CheckForm(); ">Create!</button>
+            <span id="errormess" style="color: red; margin-left: 30px"> @ViewBag.errormessage </span> 
+        </fieldset>
+    }
+}
+@Html.ActionLink("Back", "Details", "Boards", new { Id = @Model.list.BoardId }, null)
+
+<script type="text/javascript">
+    function CheckForm() {
+        debugger;
+        var errorElem = $('#errormess');
+        errorElem.text('');
+        var error = '';
+       
+        if ($('#inpName').val().trim() == "") {
+            error = 'Insert a name';
+        }
+        if (!VerifyDateFormat('end_date')) {
+            if(error == '')
+                error = 'Insert a valid date';
+            else
+                error += ' and a valid date';
+        }
+        if (error != '') {
+            errorElem.text(error + '!');
+            return false;
+        }
+        return true;
+    }
+</script>

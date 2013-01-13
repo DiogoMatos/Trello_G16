@@ -1,0 +1,11 @@
+﻿@functions
+{public static string LimitText(string text, int limit = 55)
+ {
+     if(text.Length > limit)
+     {
+         text = text.Substring(0, limit);
+         text += "...";
+     }
+     return text;
+ }
+}

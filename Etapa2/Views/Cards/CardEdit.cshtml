@@ -1,0 +1,77 @@
+﻿@using Etapa2.Models
+@using Etapa2.Views.Entitys
+@model CardEdit
+@{ bool IsOwner = User.Identity.Name == Model.user; }
+
+@{
+    ViewBag.Title = "Card Edit";
+}
+
+<h2>Card <span style="color: cadetblue;">@Model.card.Name</span> Details</h2>
+<h3>Owner: @if (IsOwner){ <text>You</text> }else{ <text>@Model.user</text> }</h3>
+<h3>Creation Date: @Model.card.CreateDate.ToShortDateString()</h3>
+<h3>Conclusion Date: @Model.card.DateConclusion.ToShortDateString()</h3>
+<h3>Description: @Model.card.Description</h3>
+<br />
+
+<fieldset>
+    <legend>Edit Card</legend>
+    <br />
+    @using (Html.BeginForm("Edit", "Cards", FormMethod.Post, new { style = "display:inline;" }))
+    {
+        <div>Name: <span style="margin-left: 40px">@Html.TextBox("name", Model.card.Name, new { id = "inpName" })</span></div>
+        <div>End Date: <span style="margin-left: 17px;">@Html.TextBox("end_date", Model.card.DateConclusion.ToShortDateString(), new { id = "end_date", @class = "datepicker" })</span></div>
+        <div>Position:
+            <span style="margin-left: 21px;">
+                <select name="pos">
+                    @for (int i = 1; i < Model.numberofcardsinlist + 1; ++i)
+                    {
+                        if (i != Model.card.BoardListPosition)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                        else
+                        {
+                            <option selected value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </span>
+        </div>
+        <div style="position: relative"> <span style="position: absolute; top: 0">Description:</span> <span style="margin-left: 82px">@Html.TextArea("desc", Model.card.Description, new { @class = "textArea" })</span></div>
+
+        <button type="submit" onclick="javaScript: return CheckForm();">Edit</button>  <span id="okmess" style="color: green; padding-left:15px;"> @ViewBag.okmessage </span> <span id="errormess" style="color: red; padding-left:15px;"> @ViewBag.errormessage </span>
+    }
+    @if(!Model.card.IsArchived){
+        using (Html.BeginForm("Archive", "Cards", new { cardId = Model.card.Id }, FormMethod.Post , new { style = "display:inline;" }))
+        {
+            <button type="submit">Archive</button>
+        }
+    }
+</fieldset>
+
+<p>@Html.ActionLink("Back", "Details", "Lists", new { id=Model.card.BoardListId }, null)</p>
+
+<script type="text/javascript">
+    function CheckForm() {
+        $('#okmess').text('');
+        var errorElem = $('#errormess');
+        errorElem.text('');
+        var error = '';
+       
+        if ($('#inpName').val().trim() == "") {
+            error = 'Insert a name';
+        }
+        if (!VerifyDateFormat('end_date')) {
+            if(error == '')
+                error = 'Insert a valid date';
+            else
+                error += ' and a valid date';
+        }
+        if (error != '') {
+            errorElem.text(error + '!');
+            return false;
+        }
+        return true;
+    }
+</script>

@@ -1,0 +1,95 @@
+﻿@using Etapa2.Models
+@using Etapa2.Views.Entitys
+@model BoardDetails
+
+@{
+    ViewBag.Title = "BoardDetail - " + Model.board.Name;
+}
+
+<h2>Board <span style="color: cadetblue">@Model.board.Name</span> Details</h2>
+<h3>Owner: @if (User.Identity.Name == Model.board.User){ <text>You</text> }else{ <text>@Model.board.User</text> }</h3>
+<h3>Descripton: @Model.board.Description</h3>
+<h3>Creation Date: @Model.board.CreateDate.ToShortDateString()</h3>
+
+<br/><hr/><br/>
+
+@if(Model.listsDivided.Any())
+{
+    <fieldset>
+        <legend>@Model.board.Name - Lists</legend>
+        <table style="width: 100%">
+            @foreach(var listDivision in Model.listsDivided)
+            {
+                <tr style="height: 70px;">
+
+                    @foreach (BoardList list in listDivision)
+                    {
+                        <td class="filledboard" style="width: @(100/Model.listsPerLine)%; position: relative;">
+                            <div style="position: absolute; top: 0; width: 100%; height: 100%;">
+                                <div style="position: absolute; top: 0; right: 0; font-size: 70%; padding-right: 5px">@list.CreateDate.ToShortDateString()</div>
+                                <br/>
+                                <div style=" text-align:center; margin-right: 10px;">@Html.ActionLink(list.Name, "Details", "Lists", new {id = list.Id}, null)</div>
+                                    @if (Model.canUserWrite){
+                                        <a href="/Lists/Edit/@list.Id"><img src="../../Content/img/editlist.jpg" width="20" height="20"/> </a>
+                                    }
+                            </div>
+                        </td>
+                    }
+                    @if (listDivision.Count() != Model.listsPerLine)
+                    {
+                        int n = Model.listsPerLine - listDivision.Count();
+                        for (int i = 0; i < n; i++)
+                        {
+                            <td class="empty" style="width: @(100/Model.listsPerLine)%"> </td>
+                        }
+                    }
+                </tr>
+            }
+        </table>
+    </fieldset>
+}
+@if(!Model.listsDivided.Any())
+{
+    <div style="border: solid 2px #e8eef4; height: 150px; text-align: center;">
+        @if(Model.canUserWrite){
+            <h2 style=" color: cadetblue;">You don't have any lists in this board!</h2>
+            <h2 style=" color: cadetblue;">Create a new one bellow.</h2>
+        }else{
+            <h2 style=" color: cadetblue;">There are no lists in this board!</h2>
+        }
+    </div>
+}
+
+@if(Model.canUserWrite){
+    <br/><hr/><br/>
+
+    <h2>Create a new List!</h2>
+
+    using (Html.BeginForm("Create", "Lists"))
+    {
+        <input type="hidden" name="boardId" value="@Model.board.Id"/>
+        <fieldset>
+            <legend>New List</legend>
+            <div>Name: <span style="margin-left: 40px">@Html.TextBox("name", "", new { id = "name" })</span></div>
+            @if (Model.numberOfLists == 0)
+            {
+                <input type="hidden" name="position" value="1"/>
+            }
+            @if(Model.numberOfLists!=0){
+            
+                List<SelectListItem> posList = new List<SelectListItem>();
+                int i = 1;
+                for(; i <= Model.numberOfLists; ++i)
+                {
+                    posList.Add(new SelectListItem {Selected = false, Text = i.ToString(), Value = i.ToString()});
+                }
+                posList.Add(new SelectListItem {Selected = true, Text = i.ToString(), Value = i.ToString()});
+            
+                <div style="position: relative"> <span style="position: absolute; top: 0">Position:</span> <span style="margin-left: 82px">@Html.DropDownList("position", posList)</span></div>
+            }
+            <button type="submit" onclick="javaScript: return VerifyElementNotNull('name', 'Name');">Create!</button>
+            <span id="inputError" style="color: red; margin-left: 30px"> </span>
+        </fieldset>
+    }
+}
+@Html.ActionLink("Back","Index")

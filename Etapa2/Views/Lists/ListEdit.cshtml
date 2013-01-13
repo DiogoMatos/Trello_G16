@@ -1,0 +1,79 @@
+﻿@using Etapa2.Models
+@using Etapa2.Views.Entitys
+@model ListEdit
+@{ bool IsOwner = User.Identity.Name == Model.user; }
+
+@{
+    ViewBag.Title = "ListEdit";
+}
+
+<h2>List <span style="color: cadetblue;">@Model.list.Name</span> Details</h2>
+<h3>Owner: @if (IsOwner){ <text>You</text> }else{ <text>@Model.user</text> }</h3>
+<h3>Creation Date: @Model.list.CreateDate.ToShortDateString()</h3>
+<h4>This List has @Model.numberofcardslistcontains Cards</h4>
+
+<fieldset>
+    <legend>Edit List</legend>
+    <br />
+    
+    @using (Html.BeginForm("Edit", "Lists"))
+    {
+        <br />
+        <div>Name: 
+            <span style="margin-left: 5px">@Html.TextBox("name", Model.list.Name, new { id = "inpName" })</span>
+            <span id="errorname" style="color: red; padding-left:15px;">@ViewBag.errorname</span> <span id="messagename" style="color: green; padding-left:15px;"> @ViewBag.messagename </span>
+        </div>
+        <br />
+        <div>Position in Board:
+            <span>
+                <select name="pos">
+                    @for(int i = 1; i < Model.numberoflistsinboard+1; ++i)
+                    {
+                        if(i != Model.list.BoardPosition){
+                            <option value="@i">@i</option>
+                        }else{
+                            <option selected value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </span>
+            <span id="messagepos" style="color: green; padding-left:15px;"> @ViewBag.messagepos </span>
+        </div>
+        <button type="submit" onclick="javaScript: return CheckIfNameFieldEmpty();">Edit!</button> 
+    }
+    @if (Model.numberofcardslistcontains == 0)
+    {
+        <br />
+        using (Html.BeginForm("Delete", "Lists", new { id = Model.list.Id }))
+        {
+            <label for="btnRemove" style="padding-right:5px;">Delete this List:</label>
+            <input id="btnRemove" type="image" src="../../Content/img/remove.jpg" width="20" height="20" onclick="javaScript: return ConfirmRemovePermission();" />
+        }
+    }
+</fieldset>
+@Html.ActionLink("Back", "Details", "Boards", new { Id = @Model.list.BoardId }, null)
+
+<script type="text/javascript">
+    function ConfirmRemovePermission() {
+        debugger;
+        if (confirm('Are you sure you want remove this list?')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function CheckIfNameFieldEmpty() {
+        document.getElementById('messagepos').value = '';
+        document.getElementById('messagename').value = '';
+        var errorElem = document.getElementById('errorname');
+        if (document.getElementById('inpName').value == "") {
+            errorElem.innerHTML = 'Insert a name...';
+            return false;
+        }
+        else {
+            errorElem.innerHTML = '';
+            return true;
+        }
+    }
+</script>

@@ -1,0 +1,39 @@
+﻿@model Tuple<Etapa2.Models.User,IEnumerable<Etapa2.Models.User>>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>@Model.Item1.Nickname Profile</h2>
+
+<fieldset>
+    <legend> Profile </legend>
+    <p>Name: @Model.Item1.Name</p>
+    <p>Nickname: @Model.Item1.Nickname</p>
+    <p>Email: @Model.Item1.Email</p>
+    <p>Permissions: @Model.Item1.Type</p>
+    <p><img width="150" height="150" alt="imagem" src ="@Url.Action("GetImage", "User", new { Model.Item1.Nickname })"/></p>
+    
+    @Html.ActionLink("Edit","Edit","User")
+    @Html.ActionLink("Delete","RemoveUser","User")
+</fieldset>
+
+@if(User.IsInRole("admin")){
+    <fieldset>
+        <legend> Remove Other Users </legend>
+        <ul>
+            @if(!Model.Item2.Any()){
+                <li>There are no other users!</li>
+            } else{
+                foreach(var u in Model.Item2){
+                    <li>
+                        <span>@u.Nickname</span> - 
+                        <span>@Html.ActionLink("Remove","RemoveById","User",new { id = u.Nickname },null)</span> | 
+                        <span>@Html.ActionLink("Promote to Admin","SetAdmin","User",new { id = u.Nickname },null)</span>
+                    </li>
+                }
+            }
+        </ul>
+    </fieldset>
+}
+
