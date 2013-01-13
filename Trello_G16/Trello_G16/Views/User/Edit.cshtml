@@ -1,0 +1,45 @@
+﻿@model Etapa2.Models.User
+
+@{
+    ViewBag.Title = "Edit User";
+}
+
+<h2>Edit User Profile</h2>
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <fieldset>
+        <legend>Edit Fields</legend>
+        <div>
+            <span>@Html.LabelFor(m => m.Name)</span>
+            <span>@Html.EditorFor(m => m.Name)</span>
+        </div>
+        <div>
+            <span>@Html.LabelFor(m => m.Email)</span>
+            <span>@Html.EditorFor(m => m.Email)</span>
+        </div>
+        <div>
+            <span>@Html.LabelFor(m => m.Password)</span>
+            <span>@Html.EditorFor(m => m.Password)</span>
+        </div>
+        <p>
+            @Html.Label("Image")
+            @if (Model.Image == null)
+            {
+                @:None
+            }
+            else
+            { 
+                <img width="150" height="150" alt="imagem" 
+                     src ="@Url.Action("GetImage", "User", new { Model.Nickname })"/>
+            }
+            Inserir nova imagem: <input type="file" name="imageFile" />
+        </p>
+        @Html.HiddenFor(m => m.Nickname)
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Type)
+
+        <button type="submit">Edit</button>
+        @Html.ActionLink("Cancel","Index","User")
+    </fieldset>
+}

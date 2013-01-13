@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Search Boards</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Search</legend>
+        
+        <div>
+            <button type="submit">Search</button>
+            <input type="text" name="searchTerm" id="searchTerm" data-autocomplete="@Url.Action("ShowBoards", "Search")" />
+        </div>
+    </fieldset>
+}
+
