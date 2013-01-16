@@ -2,16 +2,25 @@
   <RecentFiles>
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Repository/f:BoardMemoryRepository.cs" caret="1270" fromTop="21" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:packages.config" caret="0" fromTop="0" />
-    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Controllers/f:AccountController.cs" caret="875" fromTop="0" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Controllers/f:UserController.cs" caret="0" fromTop="0" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Global.asax.cs" caret="0" fromTop="0" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Properties/f:AssemblyInfo.cs" caret="0" fromTop="0" />
-    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Web.config" caret="0" fromTop="0" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Web.Release.config" caret="722" fromTop="15" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Web.Debug.config" caret="0" fromTop="0" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Cards/f:ArchivedCards.cshtml" caret="1550" fromTop="27" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Lists/f:ListDetail.cshtml" caret="326" fromTop="14" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Boards/f:BoardsView.cshtml" caret="1477" fromTop="26" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Boards/f:BoardDetail.cshtml" caret="457" fromTop="12" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Web.config" caret="834" fromTop="13" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Authentication/f:EmailSender.cs" caret="0" fromTop="0" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Controllers/f:AccountController.cs" caret="2249" fromTop="9" />
   </RecentFiles>
   <RecentEdits>
-    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Web.config" caret="878" fromTop="13" />
     <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Repository/f:BoardMemoryRepository.cs" caret="1270" fromTop="21" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/f:Web.config" caret="834" fromTop="13" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Lists/f:ListDetail.cshtml" caret="2014" fromTop="19" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Cards/f:ArchivedCards.cshtml" caret="1550" fromTop="27" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Views/d:Boards/f:BoardsView.cshtml" caret="1477" fromTop="26" />
+    <File id="BA447D6D-DF78-42AD-81E3-E2B4E7D9C70B/d:Controllers/f:AccountController.cs" caret="2796" fromTop="25" />
   </RecentEdits>
 </RecentFiles>

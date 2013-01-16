@@ -83,7 +83,7 @@ namespace Etapa2.Controllers
 
                 //Enviar Email
                 var emailSender = new EmailSender();
-                emailSender.ProcessEmail(model.Email, new Url("http://localhost:50027/Account/Validate/" + str));
+                emailSender.ProcessEmail(model.Email, new Url("http://trellog16.apphb.com/Account/Validate/" + str));
                 return RedirectToAction("LogOn");
             }
             return View();
